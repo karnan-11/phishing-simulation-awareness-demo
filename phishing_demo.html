@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Phishing Simulation Toolkit</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the demo */
+        .log-box, .report-box {
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            transition: all 0.3s ease;
+        }
+        .dashboard-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            border-top: 4px solid var(--card-color, #1e40af);
+        }
+        .text-accent {
+            color: #1e40af; /* Blue-800 equivalent */
+        }
+        /* Style for the simulated form submission message */
+        .success-message {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans p-4 lg:p-10">
+
+    <div class="max-w-8xl mx-auto space-y-10">
+        <header class="text-center pb-4 border-b border-gray-200">
+            <h1 class="text-5xl font-extrabold text-gray-800">Advanced Phishing Awareness Platform</h1>
+            <p class="text-xl text-gray-500 mt-2">Simulate, Log, and Report: A Campaign Analyst's Dashboard</p>
+        </header>
+
+        <!-- Template Selector and Simulation Area -->
+        <div class="grid lg:grid-cols-3 gap-8">
+
+            <!-- Template Selector and Control Panel -->
+            <div class="lg:col-span-1 dashboard-card" style="--card-color: #4f46e5;">
+                <h2 class="text-2xl font-bold mb-4 text-accent">Campaign Control</h2>
+                <label for="template-selector" class="block text-sm font-medium text-gray-700 mb-2">Select Active Phishing Template:</label>
+                <select id="template-selector" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                    <option value="external">External: Account Suspension (Urgency/Fear)</option>
+                    <option value="internal">Internal: HR Policy Update (Authority/Policy)</option>
+                </select>
+
+                <div class="mt-6 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <p class="font-semibold text-indigo-700">Instructions for Demo:</p>
+                    <ol class="list-disc list-inside text-sm text-indigo-600 space-y-1 mt-1">
+                        <li>Select a template above.</li>
+                        <li>Click the **Action Button** in the Email Preview (right panel).</li>
+                        <li>This simulates the "Click Log" and reveals the landing page.</li>
+                        <li>Enter mock data and click **Submit** to simulate a credential harvest.</li>
+                        <li>Review the **Activity Logs** and **Campaign Metrics** below.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Phishing Email Preview (Dynamic Content) -->
+            <div class="lg:col-span-2 dashboard-card" style="--card-color: #ef4444;">
+                <h2 class="text-2xl font-bold mb-4 flex items-center text-red-600">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    Simulated Phishing Email Preview
+                </h2>
+                <div class="border border-gray-300 p-4 rounded-lg bg-gray-50">
+                    <p id="email-from" class="text-sm text-gray-500 mb-2"></p>
+                    <p id="email-subject" class="text-sm text-gray-500 mb-4 font-semibold"></p>
+                    <div class="bg-white p-6 border rounded-lg shadow-inner">
+                        <div id="email-body"></div>
+                        <!-- This is the phishing link/button -->
+                        <div class="mt-6 text-center">
+                            <button id="phishing-link" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-xl transition duration-150 transform hover:scale-105">
+                                Secure Verification Portal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulated Landing Page and Metrics -->
+        <div class="grid lg:grid-cols-2 gap-8">
+
+            <!-- Simulated Login Landing Page -->
+            <div class="dashboard-card" style="--card-color: #2563eb;">
+                <h2 class="text-2xl font-bold mb-4 flex items-center text-blue-700">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    Simulated Landing Page (The Trap)
+                </h2>
+                <div id="phishing-page" class="hidden bg-gray-50 p-6 rounded-lg max-w-sm mx-auto shadow-md">
+                    <div class="text-center mb-6">
+                        <svg class="mx-auto h-10 w-10 text-blue-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2h2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2h2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                        <h3 class="mt-2 text-xl font-bold text-gray-900" id="landing-page-title">Account Verification</h3>
+                        <p class="text-sm text-red-600">Please re-enter your credentials.</p>
+                    </div>
+                    <form id="phishing-form" class="space-y-4">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">User ID / Email</label>
+                            <input type="email" id="email" name="email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 border focus:ring-blue-500 focus:border-blue-500" placeholder="required@corp.com">
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" id="password" name="password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 border focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition duration-150">
+                            Submit & Verify
+                        </button>
+                    </form>
+                </div>
+
+                <div id="page-instructions" class="text-center p-8 mt-4">
+                    <p class="text-gray-500">The simulated login page will appear here once the user clicks the action link.</p>
+                </div>
+            </div>
+
+            <!-- Campaign Metrics and Reporting -->
+            <div class="dashboard-card" style="--card-color: #059669;">
+                <h2 class="text-2xl font-bold mb-4 flex items-center text-green-700">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    Campaign Metrics & Awareness Report
+                </h2>
+                <div id="report-summary" class="report-box bg-green-50 p-4 rounded-lg border border-green-200">
+                    <h3 class="text-xl font-bold mb-2 text-green-800">Overall Campaign Summary</h3>
+                    <p>Total Emails Sent: <span class="font-bold text-green-800">1000</span> (Mock Data)</p>
+                    <p>Total Submissions Across All Templates: <span id="total-submissions-all" class="font-bold text-red-600">0</span></p>
+                    <hr class="my-3 border-green-300">
+                    <h4 class="text-lg font-bold mb-2 text-green-800">Metrics for Current Template: <span id="current-template-name" class="text-indigo-600">External: Account Suspension</span></h4>
+                    <p>Clicks (Landed on Page): <span id="current-clicks" class="font-bold text-yellow-600">0</span></p>
+                    <p>Credential Submissions (Failure Rate): <span id="current-submissions" class="font-bold text-red-600">0</span></p>
+                    <p class="mt-2 text-sm">Template Failure Rate: <span id="template-risk-rate" class="font-bold text-gray-600">0.00%</span></p>
+                </div>
+                <div class="mt-4 text-sm text-gray-500">
+                    <p>Analytics Note: This view helps the SOC team identify the most successful attack vectors and target training.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulated Log Collection -->
+        <div class="dashboard-card" style="--card-color: #9333ea;">
+            <h2 class="text-2xl font-bold mb-4 flex items-center text-purple-700">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Activity Logs (Simulated Server Side)
+            </h2>
+            <div id="log-display" class="log-box bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm">
+                <!-- Initial Log Entry -->
+                <p>> [INFO] Toolkit Initialized. Ready for next simulation run...</p>
+            </div>
+            <div class="text-sm text-gray-500 mt-2">
+                <p class="text-red-500 font-bold">WARNING: This is a safe demo. No real credentials are ever collected or transmitted.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Toolkit Configuration and State ---
+        const templates = {
+            'external': {
+                name: 'External: Account Suspension',
+                from: 'support@amazon-securty.com (Typo Alert!)',
+                subject: 'Action Required: Your Account Has Been Temporarily Suspended',
+                body: `
+                    <p class="font-bold text-lg mb-3">URGENT Security Notification</p>
+                    <p class="text-gray-700 mb-4">Dear Customer,</p>
+                    <p class="text-gray-700 mb-4">We detected unusual login activity on your account from a new device in Mumbai, India. To protect your privacy, access has been suspended.</p>
+                    <p class="text-gray-700 mb-6">Click the secure link below immediately to verify your identity and restore full access:</p>
+                `,
+                submissions: 0,
+                clicks: 0,
+                landingTitle: 'External Account Verification'
+            },
+            'internal': {
+                name: 'Internal: HR Policy Update',
+                from: 'HR-Support@corp-internal.com',
+                subject: 'Action Required: Q4 Bonus Calculation & New Policy Link',
+                body: `
+                    <p class="font-bold text-lg mb-3 text-red-700">Internal Policy Update - HIGH PRIORITY</p>
+                    <p class="text-gray-700 mb-4">Dear Employee,</p>
+                    <p class="text-gray-700 mb-4">Due to recent regulatory changes, all Q4 bonus calculations and preferred payout methods must be verified through our new self-service portal immediately.</p>
+                    <p class="text-gray-700 mb-6">Failure to update your profile by EOD will result in a delay in your payment. Click here to verify your details:</p>
+                `,
+                submissions: 0,
+                clicks: 0,
+                landingTitle: 'Internal Portal Login'
+            }
+        };
+
+        const totalEmployees = 1000; // Mock data for total emails sent
+
+        let currentTemplate = 'external';
+
+        // --- DOM Elements ---
+        const logDisplay = document.getElementById('log-display');
+        const templateSelector = document.getElementById('template-selector');
+        const phishingLink = document.getElementById('phishing-link');
+        const phishingPage = document.getElementById('phishing-page');
+        const phishingForm = document.getElementById('phishing-form');
+        const pageInstructions = document.getElementById('page-instructions');
+
+        // --- Core Functions ---
+
+        /**
+         * Adds a timestamped entry to the simulated log display.
+         */
+        function logAction(type, message) {
+            const now = new Date().toLocaleTimeString('en-US', { hour12: false });
+            const logEntry = document.createElement('p');
+            logEntry.innerHTML = `> [${type}] ${now} [${templates[currentTemplate].name}]: ${message}`;
+            logDisplay.appendChild(logEntry);
+            logDisplay.scrollTop = logDisplay.scrollHeight; // Scroll to bottom
+        }
+
+        /**
+         * Renders the currently selected phishing email template.
+         */
+        function renderTemplate() {
+            const t = templates[currentTemplate];
+            document.getElementById('email-from').textContent = `From: ${t.from}`;
+            document.getElementById('email-subject').textContent = `Subject: ${t.subject}`;
+            document.getElementById('email-body').innerHTML = t.body;
+            phishingLink.textContent = currentTemplate === 'internal' ? 'Verify Q4 Bonus Details' : 'Secure Verification Portal';
+            document.getElementById('current-template-name').textContent = t.name;
+
+            // Reset UI for new simulation run
+            phishingPage.classList.add('hidden');
+            pageInstructions.classList.remove('hidden');
+            // Re-enable form content if it was replaced
+            if (phishingForm.dataset.replaced) {
+                phishingForm.dataset.replaced = '';
+                phishingForm.innerHTML = `
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">User ID / Email</label>
+                        <input type="email" id="email" name="email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 border focus:ring-blue-500 focus:border-blue-500" placeholder="required@corp.com">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="password" name="password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 border focus:ring-blue-500 focus:border-blue-500" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition duration-150">
+                        Submit & Verify
+                    </button>
+                `;
+                document.getElementById('landing-page-title').textContent = t.landingTitle;
+            }
+
+            updateReport();
+            logAction('INFO', `Template switched. Simulation using: ${t.name}`);
+        }
+
+        /**
+         * Updates the awareness report metrics.
+         */
+        function updateReport() {
+            const t = templates[currentTemplate];
+            const totalSubmissionsAll = Object.values(templates).reduce((sum, tmpl) => sum + tmpl.submissions, 0);
+
+            // Update current template metrics
+            document.getElementById('current-clicks').textContent = t.clicks;
+            document.getElementById('current-submissions').textContent = t.submissions;
+            document.getElementById('total-submissions-all').textContent = totalSubmissionsAll;
+
+            // Calculate current template failure rate (mock math: submissions / 1000)
+            const submissionRate = (t.submissions / totalEmployees) * 10000; // Adjusted for a percentage based on 1000 sends
+            const riskRateElement = document.getElementById('template-risk-rate');
+
+            riskRateElement.textContent = `${submissionRate.toFixed(2)}%`;
+
+            // Change color based on simulated risk
+            riskRateElement.classList.remove('text-red-600', 'text-yellow-600', 'text-gray-600', 'text-green-600');
+            if (submissionRate > 10) { // High failure rate
+                riskRateElement.classList.add('text-red-600');
+            } else if (submissionRate > 1) { // Medium failure rate
+                riskRateElement.classList.add('text-yellow-600');
+            } else { // Low/Zero failure rate
+                riskRateElement.classList.add('text-green-600');
+            }
+        }
+
+        // --- Event Listeners and Simulation Logic ---
+
+        // Selector Change
+        templateSelector.addEventListener('change', (event) => {
+            currentTemplate = event.target.value;
+            renderTemplate();
+        });
+
+        // 1. User clicks the Phishing Link (Button)
+        phishingLink.addEventListener('click', () => {
+            const t = templates[currentTemplate];
+            if (t.clicks === 0) {
+                t.clicks = 1; // Mark as clicked for this session/run
+                logAction('WARNING', 'CLICK EVENT: Target clicked phishing link (Mock IP: 10.10.2.14). Landing page served.');
+                phishingPage.classList.remove('hidden');
+                pageInstructions.classList.add('hidden');
+                document.getElementById('landing-page-title').textContent = t.landingTitle;
+                updateReport();
+            } else {
+                logAction('INFO', 'Link already clicked in this run. Displaying active landing page.');
+            }
+        });
+
+        // 2. User attempts to submit the form (Credential Harvesting Simulation)
+        phishingForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // IMPORTANT: Prevent actual form submission/navigation
+
+            const t = templates[currentTemplate];
+            const emailInput = document.getElementById('email').value || 'MOCK_USER_ID';
+            const passwordSubmitted = !!document.getElementById('password').value;
+
+            if (t.submissions === 0) {
+                t.submissions = 1; // Mark as submitted for this session/run
+                logAction('CRITICAL', `HARVEST LOG: Credential submission detected!`);
+                logAction('DUMMY DATA', `User: ${emailInput}, Password Present: ${passwordSubmitted}, Campaign: ${t.name}`);
+                logAction('SIMULATION', `User has failed the test. Campaign metric increased.`);
+            } else {
+                 logAction('SIMULATION', `Already failed test in this run.`);
+            }
+
+            // After submission, disable the form and show a generic success message
+            phishingForm.dataset.replaced = 'true';
+            phishingForm.innerHTML = `
+                <div class="p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg text-center success-message">
+                    <p class="font-bold">Verification Complete.</p>
+                    <p class="text-sm">Your account access has been successfully restored.</p>
+                </div>
+            `;
+            updateReport();
+        });
+
+        // Initialize the view
+        renderTemplate();
+        logAction('INFO', 'Professional Toolkit Loaded. Select a template to begin a new simulation run.');
+    </script>
+</body>
+</html>
